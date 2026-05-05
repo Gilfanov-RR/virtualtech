@@ -1,29 +1,26 @@
-import { Component } from '../component.js';
-
-export class PulseScaleComponent extends Component {
-  constructor({ speed = 2, amplitude = 0.2 } = {}) {
-    super();
+export class PulseScaleComponent {
+  constructor({ speed = 2, amplitude = 0.1 } = {}) {
     this.speed = speed;
     this.amplitude = amplitude;
     this.time = 0;
-    this.baseScale = null;
+    this.originalScale = null;
   }
 
   onAttach() {
     if (this.entity && this.entity.mesh) {
-      const m = this.entity.mesh;
-      this.baseScale = m.scale.clone();
+      this.originalScale = this.entity.mesh.scale.clone();
     }
   }
 
   update(dt, entity) {
     if (!entity.mesh) return;
+    if (!this.originalScale) this.originalScale = entity.mesh.scale.clone();
     this.time += dt;
-    const s = 1 + Math.sin(this.time * this.speed) * this.amplitude;
+    const factor = 1 + Math.sin(this.time * this.speed) * this.amplitude;
     entity.mesh.scale.set(
-      this.baseScale.x * s,
-      this.baseScale.y * s,
-      this.baseScale.z * s
+      this.originalScale.x * factor,
+      this.originalScale.y * factor,
+      this.originalScale.z * factor
     );
   }
 }

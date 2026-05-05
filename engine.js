@@ -6,6 +6,7 @@ export class Engine {
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.shadowMap.enabled = true;
+    this.renderer.xr.enabled = false;
     document.body.appendChild(this.renderer.domElement);
 
     this.scenes = new Map();
@@ -29,6 +30,7 @@ export class Engine {
 
   initResize() {
     window.addEventListener('resize', () => {
+       if (this.renderer.xr && this.renderer.xr.isPresenting) return;
       this.camera.aspect = window.innerWidth / window.innerHeight;
       this.camera.updateProjectionMatrix();
       this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -72,4 +74,25 @@ export class Engine {
       this.renderer.render(this.activeScene.threeScene, this.camera);
     }
   }
+startXRLoop() {
+  if (this.xrLoopActive) return;
+  if (this._rafId) cancelAnimationFrame(this._rafId);
+  this.running = false; // останавливаем старый цикл
+  this.renderer.setAnimationLoop((time, frame) => {
+    const dt = this.clock.getDelta();
+    if (this.activeScene) {
+      this.activeScene.update(dt);
+      this.renderer.render(this.activeScene.threeScene, this.camera);
+    }
+  });
+  this.xrLoopActive = true;
+}
+
+stopXRLoop() {
+  if (!this.xrLoopActive) return;
+  this.renderer.setAnimationLoop(null);
+  this.xrLoopActive = false;
+  this.running = true;
+  this._loop(); // перезапускаем старый цикл
+}
 }

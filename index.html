@@ -2,28 +2,108 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lab 4</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Lab 4 - VR Enhanced Engine</title>
     <style>
         body {
             margin: 0;
             overflow: hidden;
-            background-color: #1a1a1a;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        canvas {
-            display: block;
+        #ui {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 100;
+            display: flex;
+            gap: 12px;
+            background: rgba(0,0,0,0.6);
+            padding: 10px 20px;
+            border-radius: 30px;
+            backdrop-filter: blur(5px);
+            pointer-events: auto;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: transform 0.1s ease, background 0.2s;
+            background: #2c3e66;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        button:hover {
+            background: #1e2a47;
+            transform: scale(1.02);
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        #vr-btn {
+            background: #6a1b9a;
+        }
+        #vr-btn.available {
+            background: #8e24aa;
+            box-shadow: 0 0 8px #b85eff;
+        }
+        #vr-btn.active {
+            background: #ff5722;
+        }
+        #info-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.7);
+            padding: 10px 16px;
+            border-radius: 12px;
+            color: white;
+            font-family: monospace;
+            font-size: 14px;
+            backdrop-filter: blur(4px);
+            pointer-events: none;
+            z-index: 100;
+            text-align: right;
+            border-left: 3px solid #ffaa44;
+        }
+        #obj-name {
+            font-weight: bold;
+            color: #ffaa66;
+        }
+        .vr-badge {
+            background: #ff5722;
+            border-radius: 20px;
+            padding: 2px 8px;
+            font-size: 11px;
+            margin-left: 8px;
+        }
+        @media (max-width: 600px) {
+            button { padding: 6px 12px; font-size: 12px; }
+            #info-panel { font-size: 10px; top: 10px; right: 10px; }
         }
     </style>
 </head>
-
 <body>
-    <button id="rotate-btn">Вращение камеры</button>
-
-    <div id="info" style="color: #ffffff">
-        <p>Имя: <span id="obj-name"></span></p>
+    <div id="ui">
+        <button id="rotate-btn">🔄 Вращение камеры</button>
+        <button id="vr-btn" disabled>🥽 Вход в VR</button>
+    </div>
+    <div id="info-panel">
+        <div>🎮 Выбрано: <span id="obj-name">—</span></div>
+        <div id="vr-status">📺 Режим: Desktop</div>
     </div>
 
-    <!-- ВАЖНО: никаких three.min.js -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
     <script type="module" src="./main.js"></script>
 </body>
 </html>
